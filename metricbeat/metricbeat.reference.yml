@@ -162,6 +162,11 @@ metricbeat.modules:
   period: 10s
   hosts: ["localhost:8500"]
 
+#------------------------------- Coredns Module ------------------------------
+- module: coredns
+  metricsets: ["stats"]
+  period: 10s
+  hosts: ["localhost:9153"]
 
 #------------------------------ Couchbase Module -----------------------------
 - module: couchbase
@@ -835,7 +840,7 @@ metricbeat.modules:
 #
 #   event -> filter1 -> event1 -> filter2 ->event2 ...
 #
-# The supported processors are drop_fields, drop_event, include_fields, 
+# The supported processors are drop_fields, drop_event, include_fields,
 # decode_json_fields, and add_cloud_metadata.
 #
 # For example, you can use the following processors to keep the fields that
@@ -926,7 +931,7 @@ metricbeat.modules:
 #    match_pids: ["system.process.ppid"]
 #    target: system.process.parent
 #
-# The following example decodes fields containing JSON strings 
+# The following example decodes fields containing JSON strings
 # and replaces the strings with valid JSON objects.
 #
 #processors:
