@@ -2241,13 +2241,13 @@ coredns Module
 
 
 [float]
-== metrics fields
+== stats fields
 
 Contains statistics related to the coreDNS service
 
 
 
-*`coredns.metrics.panic.count.total`*::
+*`coredns.stats.panic.count.total`*::
 +
 --
 type: long
@@ -2257,7 +2257,7 @@ Total number of panics
 
 --
 
-*`coredns.metrics.dns.request.count.total`*::
+*`coredns.stats.dns.request.count.total`*::
 +
 --
 type: long
@@ -2267,7 +2267,7 @@ Total query count
 
 --
 
-*`coredns.metrics.dns.request.duration.sec`*::
+*`coredns.stats.dns.request.duration.sec`*::
 +
 --
 type: long
@@ -2279,7 +2279,7 @@ Duration to process each query
 
 --
 
-*`coredns.metrics.dns.request.size.bytes`*::
+*`coredns.stats.dns.request.size.bytes`*::
 +
 --
 type: long
@@ -2291,7 +2291,7 @@ Size of requests in bytes
 
 --
 
-*`coredns.metrics.dns.request.do.count.total`*::
+*`coredns.stats.dns.request.do.count.total`*::
 +
 --
 type: long
@@ -2301,7 +2301,7 @@ Number of queries that have the DO bit set
 
 --
 
-*`coredns.metrics.dns.request.type.count.total`*::
+*`coredns.stats.dns.request.type.count.total`*::
 +
 --
 type: long
@@ -2311,7 +2311,7 @@ Counter of queries per zone and type
 
 --
 
-*`coredns.metrics.dns.request.type`*::
+*`coredns.stats.dns.request.type`*::
 +
 --
 type: keyword
@@ -2321,7 +2321,17 @@ Holds the query type of the request
 
 --
 
-*`coredns.metrics.dns.response.rcode`*::
+*`coredns.stats.dns.response.rcode.count.total`*::
++
+--
+type: long
+
+Counter of responses per zone and rcode
+
+
+--
+
+*`coredns.stats.dns.response.rcode`*::
 +
 --
 type: keyword
@@ -2331,7 +2341,7 @@ Holds the rcode of the response
 
 --
 
-*`coredns.metrics.dns.request.family`*::
+*`coredns.stats.dns.request.family`*::
 +
 --
 type: keyword
@@ -2341,7 +2351,7 @@ The address family of the transport (1 = IP (IP version 4), 2 = IP6 (IP version 
 
 --
 
-*`coredns.metrics.dns.response.size.bytes`*::
+*`coredns.stats.dns.response.size.bytes`*::
 +
 --
 type: long
@@ -2353,17 +2363,7 @@ Response size in bytes
 
 --
 
-*`coredns.metrics.dns.response.rcode.count.total`*::
-+
---
-type: long
-
-Counter of responses per zone and rcode
-
-
---
-
-*`coredns.metrics.server`*::
+*`coredns.stats.server`*::
 +
 --
 type: keyword
@@ -2373,7 +2373,7 @@ The server responsible for the request
 
 --
 
-*`coredns.metrics.zone`*::
+*`coredns.stats.zone`*::
 +
 --
 type: keyword
@@ -2383,12 +2383,13 @@ The zonename used for the request/response
 
 --
 
-*`coredns.metrics.proto`*::
+*`coredns.stats.proto`*::
 +
 --
 type: keyword
 
 The transport of the response ("udp" or "tcp")
+
 
 --
 
@@ -21258,7 +21259,7 @@ type: long
 
 format: bytes
 
-Used memory by the Lua engine.
+Used memory by the Lua engine.        
 
 
 --
@@ -21270,7 +21271,7 @@ type: long
 
 format: bytes
 
-The size in bytes of the dataset
+The size in bytes of the dataset 
 
 
 --
@@ -21515,7 +21516,7 @@ type: long
 
 format: bytes
 
-The size in bytes of copy-on-write allocations during the last RBD save operation
+The size in bytes of copy-on-write allocations during the last RBD save operation                
 
 
 --
@@ -21644,7 +21645,7 @@ type: long
 
 format: bytes
 
-AOF current file size
+AOF current file size             
 
 
 --
@@ -21748,7 +21749,7 @@ Total size in bytes of the replication backlog buffer
 --
 type: long
 
-The master offset of the replication backlog buffer
+The master offset of the replication backlog buffer          
 
 
 --
@@ -26206,3 +26207,4 @@ type: long
 Epoch value of the Zookeeper transaction ID
 
 --
+
