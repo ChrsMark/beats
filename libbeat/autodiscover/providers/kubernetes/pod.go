@@ -123,11 +123,6 @@ func NewPodEventer(uuid uuid.UUID, cfg *common.Config, client k8s.Interface, pub
 }
 
 // OnAdd ensures processing of service objects that are newly added
-func (p *pod) getWatcher(obj interface{}) kubernetes.Watcher{
-
-}
-
-// OnAdd ensures processing of service objects that are newly added
 func (p *pod) OnAdd(obj interface{}) {
 	p.logger.Debugf("Watcher Node add: %+v", obj)
 	p.emit(obj.(*kubernetes.Pod), "start")
@@ -304,6 +299,8 @@ func (p *pod) emitEvents(pod *kubernetes.Pod, flag string, containers []kubernet
 		}
 		kubemeta["annotations"] = annotations
 
+		k8sKeystore, _ := keystore.Factoryk8s(pod.Namespace, p.watcher.Getk8sClient())
+
 		// Without this check there would be overlapping configurations with and without ports.
 		if len(c.Ports) == 0 {
 			event := bus.Event{
@@ -315,7 +312,7 @@ func (p *pod) emitEvents(pod *kubernetes.Pod, flag string, containers []kubernet
 				"meta": common.MapStr{
 					"kubernetes": meta,
 				},
-				"keystore": keystore.Factoryk8s(pod.Namespace, p.watcher.Getk8sClient()),
+				"keystore": k8sKeystore,
 			}
 			p.publish(event)
 		}
@@ -331,7 +328,7 @@ func (p *pod) emitEvents(pod *kubernetes.Pod, flag string, containers []kubernet
 				"meta": common.MapStr{
 					"kubernetes": meta,
 				},
-				"keystore": keystore.Factoryk8s(pod.Namespace, p.watcher.Getk8sClient()),
+				"keystore": k8sKeystore,
 			}
 			p.publish(event)
 		}

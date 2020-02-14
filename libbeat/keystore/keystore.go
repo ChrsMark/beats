@@ -20,7 +20,6 @@ package keystore
 import (
 	"errors"
 	"fmt"
-	"github.com/elastic/beats/libbeat/common/kubernetes"
 
 	"github.com/elastic/beats/libbeat/common"
 	ucfg "github.com/elastic/go-ucfg"

@@ -18,8 +18,11 @@
 package keystore
 
 import (
+	"fmt"
 	"github.com/elastic/beats/libbeat/common"
 	k8s "k8s.io/client-go/kubernetes"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"strings"
 )
 
 type KubernetesKeystores map[string]KubernetesSecretsKeystore
@@ -69,9 +72,21 @@ func lookupForKeystore(keystoreNamespace string) (Keystore, error){
 
 // Retrieve return a SecureString instance that will contains both the key and the secret.
 func (k *KubernetesSecretsKeystore) Retrieve(key string) (*SecureString, error) {
-
-	// here retrieve from API by using the key which is the name of the Namespace
-	return NewSecureString([]byte{}), nil
+	// key = "kubernetes:somenamespace:somesecret:value"
+	ns := strings.Split(key, ":")[1]
+	secretName := strings.Split(key, ":")[2]
+	secretVal :=  strings.Split(key, ":")[3]
+	if ns != k.namespace {
+		return nil, fmt.Errorf("cannot access Kubernetes secrets from a different namespace than: %v", ns)
+	}
+	secret, err := k.client.CoreV1().Secrets("beats").Get(secretName, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+	// data := secret.StringData
+	secretString := secret.Data[secretVal]
+	fmt.Println(string(secretString))
+	return NewSecureString(secretString), nil
 }
 
 // Store add the key pair to the secret store and mark the store as dirty.
@@ -97,10 +112,12 @@ func (k *KubernetesSecretsKeystore) List() ([]string, error) {
 // GetConfig returns common.Config representation of the key / secret pair to be merged with other
 // loaded configuration.
 func (k *KubernetesSecretsKeystore) GetConfig() (*common.Config, error) {
+	return nil, nil
 }
 
 // Create create an empty keystore, if the store already exist we will return an error.
 func (k *KubernetesSecretsKeystore) Create(override bool) error {
+	return nil
 }
 
 // IsPersisted return if the keystore is physically persisted on disk.

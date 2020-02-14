@@ -18,7 +18,6 @@
 package template
 
 import (
-	"fmt"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/common/bus"
 	"github.com/elastic/beats/libbeat/conditions"
@@ -140,9 +139,9 @@ func ApplyConfigTemplate(event bus.Event, configs []*common.Config, keystoreEnab
 
 
 func updateOptsWithKeystore(event bus.Event, opts []ucfg.Option) []ucfg.Option{
-	if eventKeystore, ok := event["keystore"]; ok {
+	if val, ok := event["keystore"]; ok {
 		// do the checks and retrieve the keystore here
-		eventKeystore = eventKeystore.(keystore.Keystore)
+		eventKeystore := val.(keystore.Keystore)
 		opts = append(opts, ucfg.Resolve(keystore.ResolverWrap(eventKeystore)))
 	}
 	return opts
