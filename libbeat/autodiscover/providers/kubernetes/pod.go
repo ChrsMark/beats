@@ -19,6 +19,7 @@ package kubernetes
 
 import (
 	"fmt"
+	"github.com/elastic/beats/libbeat/keystore"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -42,6 +43,7 @@ type pod struct {
 	watcher          kubernetes.Watcher
 	nodeWatcher      kubernetes.Watcher
 	namespaceWatcher kubernetes.Watcher
+	namespace        kubernetes.Namespace
 }
 
 // NewPodEventer creates an eventer that can discover and process pod objects
@@ -118,6 +120,11 @@ func NewPodEventer(uuid uuid.UUID, cfg *common.Config, client k8s.Interface, pub
 
 	watcher.AddEventHandler(p)
 	return p, nil
+}
+
+// OnAdd ensures processing of service objects that are newly added
+func (p *pod) getWatcher(obj interface{}) kubernetes.Watcher{
+
 }
 
 // OnAdd ensures processing of service objects that are newly added
@@ -308,6 +315,7 @@ func (p *pod) emitEvents(pod *kubernetes.Pod, flag string, containers []kubernet
 				"meta": common.MapStr{
 					"kubernetes": meta,
 				},
+				"keystore": keystore.Factoryk8s(pod.Namespace, p.watcher.Getk8sClient()),
 			}
 			p.publish(event)
 		}
@@ -323,6 +331,7 @@ func (p *pod) emitEvents(pod *kubernetes.Pod, flag string, containers []kubernet
 				"meta": common.MapStr{
 					"kubernetes": meta,
 				},
+				"keystore": keystore.Factoryk8s(pod.Namespace, p.watcher.Getk8sClient()),
 			}
 			p.publish(event)
 		}
