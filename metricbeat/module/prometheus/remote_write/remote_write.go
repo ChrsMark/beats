@@ -41,7 +41,7 @@ func init() {
 type MetricSet struct {
 	mb.BaseMetricSet
 	server serverhelper.Server
-	events chan mb.Event
+	events chan prompb.WriteRequest
 }
 
 func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
@@ -52,7 +52,7 @@ func New(base mb.BaseMetricSet) (mb.MetricSet, error) {
 	}
 	m := &MetricSet{
 		BaseMetricSet: base,
-		events:        make(chan mb.Event),
+		events:        make(chan prompb.WriteRequest),
 	}
 	svc, err := httpserver.NewHttpServerWithHandler(base, m.handleFunc)
 	if err != nil {
@@ -71,8 +71,12 @@ func (m *MetricSet) Run(reporter mb.PushReporterV2) {
 		case <-reporter.Done():
 			m.server.Stop()
 			return
-		case e := <-m.events:
-			reporter.Event(e)
+		case protoReq := <-m.events:
+			samples := protoToSamples(&protoReq)
+			events := samplesToEvents(samples)
+			for _, e := range events {
+				reporter.Event(e)
+			}
 		}
 	}
 }
@@ -99,16 +103,13 @@ func (m *MetricSet) handleFunc(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	samples := protoToSamples(&protoReq)
-	events := samplesToEvents(samples)
-
-	for _, e := range events {
-		select {
-		case <-req.Context().Done():
-			return
-		case m.events <- e:
-		}
+	select {
+	case <-req.Context().Done():
+		return
+	case m.events <- protoReq:
 	}
+
+	// metrics have been received successfully, we can respond successfully
 	writer.WriteHeader(http.StatusAccepted)
 }
 
