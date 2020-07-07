@@ -7,8 +7,8 @@ package collector
 import "errors"
 
 type config struct {
-	UseTypes     bool `config:"use_types"`
-	RateCounters bool `config:"rate_counters"`
+	UseTypes     bool `config:"use_types" yaml:"use_types,omitempty"`
+	RateCounters bool `config:"rate_counters" yaml:"rate_counters,omitempty"`
 }
 
 func (c *config) Validate() error {
