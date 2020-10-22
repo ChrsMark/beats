@@ -107,9 +107,9 @@ func NewWatcher(client kubernetes.Interface, resource Resource, opts WatchOption
 		opts.IsUpdated = func(o, n interface{}) bool {
 			old, _ := accessor.ResourceVersion(o.(runtime.Object))
 			new, _ := accessor.ResourceVersion(n.(runtime.Object))
-
 			// Only enqueue changes that have a different resource versions to avoid processing resyncs.
 			if old != new {
+				panic("hhehehehehhe")
 				return true
 			}
 			return false
