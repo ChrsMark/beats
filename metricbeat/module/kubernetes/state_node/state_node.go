@@ -49,10 +49,8 @@ var (
 			"kube_node_status_allocatable_cpu_cores":    p.Metric("cpu.allocatable.cores"),
 			"kube_node_spec_unschedulable":              p.BooleanMetric("status.unschedulable"),
 			"kube_node_status_ready":                    p.LabelMetric("status.ready", "condition"),
-			"kube_node_status_condition": p.LabelMetric("status.ready", "status",
-				p.OpFilter(map[string]string{
-					"condition": "Ready",
-				})),
+			"kube_node_status_condition": p.LabelMetric("status.{condition}", "status",
+				p.OpFilter2("condition")),
 		},
 
 		Labels: map[string]p.LabelMap{
