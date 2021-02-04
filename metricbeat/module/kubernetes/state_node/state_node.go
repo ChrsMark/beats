@@ -49,8 +49,9 @@ var (
 			"kube_node_status_allocatable_cpu_cores":    p.Metric("cpu.allocatable.cores"),
 			"kube_node_spec_unschedulable":              p.BooleanMetric("status.unschedulable"),
 			"kube_node_status_ready":                    p.LabelMetric("status.ready", "condition"),
-			"kube_node_status_condition": p.LabelMetric("status.{condition}", "status",
+			"kube_node_status_condition": p.LabelMetric("status.{condition}", "status", // TODO: remove comletely {condition} we can just extend
 				p.OpFilter2("condition",
+					// TODO: make it a map like DiskPressure:diskpressure
 					[]string{"diskpressure", "memorypressure", "outofdisk", "pidpressure", "ready"},
 				)),
 		},
