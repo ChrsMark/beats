@@ -50,7 +50,9 @@ var (
 			"kube_node_spec_unschedulable":              p.BooleanMetric("status.unschedulable"),
 			"kube_node_status_ready":                    p.LabelMetric("status.ready", "condition"),
 			"kube_node_status_condition": p.LabelMetric("status.{condition}", "status",
-				p.OpFilter2("condition")),
+				p.OpFilter2("condition",
+					[]string{"diskpressure", "memorypressure", "outofdisk", "pidpressure", "ready"},
+				)),
 		},
 
 		Labels: map[string]p.LabelMap{

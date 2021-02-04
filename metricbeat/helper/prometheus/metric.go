@@ -87,9 +87,10 @@ func OpFilter(filter map[string]string) MetricOption {
 }
 
 // OpFilter2 only processes metrics matching the given filter
-func OpFilter2(key string) MetricOption {
+func OpFilter2(key string, validOptions []string) MetricOption {
 	return opFilter2{
 		key: key,
+		validOptions: validOptions,
 	}
 }
 
@@ -354,6 +355,7 @@ func (o opFilter) Process(field string, value interface{}, labels common.MapStr)
 
 type opFilter2 struct {
 	key string
+	validOptions []string
 }
 
 // Process will return nil if labels don't match the filter
@@ -366,12 +368,18 @@ func (o opFilter2) Process(field string, value interface{}, labels common.MapStr
 		return "", nil, nil
 	}
 
-	field = strings.Replace(
-		field,
-		fmt.Sprintf("{%s}", strings.ToLower(o.key)),
-		fmt.Sprintf("%s", strings.ToLower(fieldExtension)),
-		-1)
-	return field, value, labels
+	extension := strings.ToLower(fieldExtension)
+	for _, val := range o.validOptions {
+		if val == extension {
+			field = strings.Replace(
+				field,
+				fmt.Sprintf("{%s}", strings.ToLower(o.key)),
+				extension,
+				-1)
+			return field, value, labels
+		}
+	}
+	return "", nil, nil
 }
 
 type opLowercaseValue struct{}
