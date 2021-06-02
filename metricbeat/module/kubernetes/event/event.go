@@ -109,7 +109,9 @@ func (m *MetricSet) Run(reporter mb.PushReporter) {
 		// skip events happened before watch
 		FilterFunc: func(obj interface{}) bool {
 			eve := obj.(*kubernetes.Event)
+			fmt.Println("WATCHER: Checking event:", eve.Message , " with timestamp:", eve.LastTimestamp)
 			if kubernetes.Time(&eve.LastTimestamp).Before(now) {
+				fmt.Println("WATCHER: Filtering out event:", eve.Message, " with timestamp:", eve.LastTimestamp, " compared to now:", now)
 				return false
 			}
 			return true
